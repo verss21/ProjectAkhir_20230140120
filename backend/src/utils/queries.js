@@ -30,6 +30,10 @@ const GET_ANIME_DETAIL = `
       bannerImage
       genres
       averageScore
+      trailer {
+        id
+        site
+      }
     }
   }
 `;
