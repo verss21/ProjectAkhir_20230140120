@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const Favorites = () => {
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [hasApiKey, setHasApiKey] = useState(false);
 
     // Fungsi remove langsung di page ini
     const handleRemove = async (mal_id) => {
@@ -18,23 +19,46 @@ const Favorites = () => {
     };
 
     useEffect(() => {
-        const fetchFavorites = async () => {
+        const fetchInitialData = async () => {
             try {
-                const res = await axios.get('/api/favorites/list');
-                setFavorites(res.data.data);
+                // 1. Cek profil untuk API Key
+                const profileRes = await axios.get('/api/auth/profile');
+                if (profileRes.data.user && profileRes.data.user.api_key) {
+                    setHasApiKey(true);
+                    // 2. Jika ada Key, baru fetch favorites
+                    const res = await axios.get('/api/favorites/list');
+                    setFavorites(res.data.data);
+                } else {
+                    setHasApiKey(false);
+                }
             } catch (err) {
-                console.error("Gagal load favorit:", err);
+                console.error("Gagal load data:", err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchFavorites();
+        fetchInitialData();
     }, []);
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-screen gap-4">
             <div className="w-12 h-12 border-4 border-[var(--accent-pink)] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[10px] font-black uppercase text-pink-500 tracking-[0.5em] animate-pulse">Syncing Favorites...</p>
+            <p className="text-[10px] font-black uppercase text-pink-500 tracking-[0.5em] animate-pulse">Checking Access Tokens...</p>
+        </div>
+    );
+
+    if (!hasApiKey) return (
+        <div className="max-w-7xl mx-auto py-10 px-4 min-h-screen flex items-center justify-center">
+            <div className="glass-morphism p-12 text-center max-w-lg border-red-500/20">
+                <div className="text-6xl mb-6">🔒</div>
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-4">Akses Terbatas</h2>
+                <p className="text-gray-400 text-sm mb-8 leading-relaxed font-medium uppercase tracking-widest text-[9px]">
+                    Anda harus men-generate <span className="text-[var(--accent-cyan)] font-black">API KEY</span> di halaman profil untuk membuka akses ke daftar Favorites Anda.
+                </p>
+                <Link to="/profile" className="inline-flex items-center gap-4 bg-gradient-to-tr from-[var(--accent-cyan)] to-[var(--accent-purple)] text-black px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20">
+                    Buka Akses Sekarang
+                </Link>
+            </div>
         </div>
     );
 
