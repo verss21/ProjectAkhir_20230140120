@@ -27,7 +27,6 @@ const Navbar = () => {
               <NavBtn to="/home" label="Browse" />
               <NavBtn to="/seasonal" label="Seasonal" />
               <NavBtn to="/top" label="Trending" />
-              <NavBtn to="/terminal" label="Terminal" />
               <NavBtn to="/watchlist" label="Watchlist" />
               <NavBtn to="/favorites" label="Favorites" />
             </div>
@@ -72,8 +71,6 @@ const Navbar = () => {
           <div className="flex flex-col gap-1 px-4">
             <MobileLink to="/home" label="Browse" onClick={() => setIsOpen(false)} />
             <MobileLink to="/seasonal" label="Seasonal" onClick={() => setIsOpen(false)} />
-            <MobileLink to="/top" label="Trending" onClick={() => setIsOpen(false)} />
-            <MobileLink to="/terminal" label="Terminal" onClick={() => setIsOpen(false)} />
             <MobileLink to="/watchlist" label="Watchlist" onClick={() => setIsOpen(false)} />
             <MobileLink to="/history" label="History" onClick={() => setIsOpen(false)} />
             <MobileLink to="/favorites" label="Favorites" onClick={() => setIsOpen(false)} />
