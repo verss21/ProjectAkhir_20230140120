@@ -5,21 +5,27 @@ import { Link } from 'react-router-dom';
 const Watchlist = () => {
     const [watchlist, setWatchlist] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [hasApiKey, setHasApiKey] = useState(false);
 
     useEffect(() => {
-        fetchWatchlist();
+        const fetchInitialData = async () => {
+            try {
+                const profileRes = await axios.get('/api/auth/profile');
+                if (profileRes.data.user && profileRes.data.user.api_key) {
+                    setHasApiKey(true);
+                    const res = await axios.get('/api/watchlist/list');
+                    setWatchlist(res.data.data);
+                } else {
+                    setHasApiKey(false);
+                }
+            } catch (err) {
+                console.error("Gagal load watchlist:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchInitialData();
     }, []);
-
-    const fetchWatchlist = async () => {
-        try {
-            const res = await axios.get('/api/watchlist/list');
-            setWatchlist(res.data.data);
-        } catch (err) {
-            console.error("Gagal load watchlist:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleRemove = async (mal_id) => {
         if (!window.confirm("Hapus dari watchlist?")) return;
@@ -34,7 +40,22 @@ const Watchlist = () => {
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-screen gap-4">
             <div className="w-12 h-12 border-4 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[10px] font-black uppercase text-cyan-500 tracking-[0.5em] animate-pulse">Scanning Watchlist...</p>
+            <p className="text-[10px] font-black uppercase text-cyan-500 tracking-[0.5em] animate-pulse">Verifying Security Nodes...</p>
+        </div>
+    );
+
+    if (!hasApiKey) return (
+        <div className="max-w-7xl mx-auto py-10 px-4 min-h-screen flex items-center justify-center">
+            <div className="glass-morphism p-12 text-center max-w-lg border-cyan-500/20">
+                <div className="text-6xl mb-6">🔒</div>
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-4">Transmission Blocked</h2>
+                <p className="text-gray-400 text-sm mb-8 leading-relaxed font-medium uppercase tracking-widest text-[9px]">
+                    Koneksi ke <span className="text-[var(--accent-purple)] font-black">WATCHLIST</span> memerlukan identitas API yang valid. Silakan generate API KEY Anda.
+                </p>
+                <Link to="/profile" className="inline-flex items-center gap-4 bg-gradient-to-tr from-[var(--accent-cyan)] to-[var(--accent-purple)] text-black px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/20">
+                    Buka Watchlist (Generate Key)
+                </Link>
+            </div>
         </div>
     );
 
