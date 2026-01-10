@@ -76,6 +76,23 @@ const Detail = () => {
               {anime.synopsis || "Tidak ada deskripsi tersedia untuk anime ini."}
             </p>
           </div>
+
+          {/* Trailer */}
+          {anime.trailer?.embed_url && (
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-3 text-red-400">Trailer</h3>
+              <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-700">
+                <iframe
+                  width="100%"
+                  height="400"
+                  src={anime.trailer.embed_url}
+                  title="Anime Trailer"
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
