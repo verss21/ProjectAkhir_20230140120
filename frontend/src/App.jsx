@@ -11,7 +11,7 @@ import Seasonal from './pages/Seasonal';
 import TopAnime from './pages/TopAnime';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import AnilistTerminal from './pages/AnilistTerminal';
+
 
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -42,7 +42,7 @@ function App() {
             <Route path="/watchlist" element={<PrivateRoute><Watchlist /></PrivateRoute>} />
             <Route path="/seasonal" element={<PrivateRoute><Seasonal /></PrivateRoute>} />
             <Route path="/top" element={<PrivateRoute><TopAnime /></PrivateRoute>} />
-            <Route path="/terminal" element={<PrivateRoute><AnilistTerminal /></PrivateRoute>} />
+
             <Route path="/anime/:id" element={<PrivateRoute><AnimeDetail /></PrivateRoute>} />
             <Route path="/anime/local/:id" element={<PrivateRoute><LocalDetail /></PrivateRoute>} />
 
