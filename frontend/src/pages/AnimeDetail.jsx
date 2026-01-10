@@ -311,6 +311,23 @@ const AnimeDetail = () => {
             <BentoInfo label="Episodes" value={anime.episodes || '??'} />
           </div>
 
+          {/* Trailer Fragment */}
+          {anime.trailer?.embed_url && (
+            <div className="glass-morphism p-0 overflow-hidden rounded-[2.5rem] border-white/5 shadow-2xl">
+              <div className="flex items-center gap-3 p-6 border-b border-white/5">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Trailer Transmission</h3>
+              </div>
+              <iframe
+                src={`${anime.trailer.embed_url}&autoplay=0`}
+                title="Anime Trailer"
+                className="w-full aspect-video"
+                allowFullScreen
+                frameBorder="0"
+              ></iframe>
+            </div>
+          )}
+
           <div className="glass-morphism">
             <h3 className="text-[10px] font-black text-[var(--accent-cyan)] uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
               <span className="w-1 h-1 bg-cyan-500 rounded-full"></span> Data Fragment
