@@ -119,13 +119,6 @@ const Profile = () => {
                                 <code className="text-[var(--accent-cyan)] font-mono text-xs font-bold tracking-wider">{user.api_key || 'NO_KEY_DETECTED'}</code>
                             </div>
                             <div className="flex gap-2">
-                                <Link
-                                    to="/terminal"
-                                    className="text-white/20 hover:text-[var(--accent-purple)] transition-colors text-lg"
-                                    title="Open Terminal"
-                                >
-                                    📟
-                                </Link>
                                 <button
                                     onClick={copyToClipboard}
                                     className={`transition-colors text-lg ${user.api_key ? 'text-white/20 hover:text-white' : 'text-white/5 cursor-not-allowed'}`}
