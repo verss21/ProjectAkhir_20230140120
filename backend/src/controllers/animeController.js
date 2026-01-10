@@ -10,7 +10,7 @@ const getPopularAnime = async (req, res) => {
         };
 
         const data = await fetchFromAniList(GET_POPULAR_ANIME, variables);
-        
+
         res.status(200).json({
             success: true,
             data: data.data.Page
@@ -30,7 +30,7 @@ const getAnimeDetail = async (req, res) => {
         const variables = { id: parseInt(id) };
 
         const data = await fetchFromAniList(GET_ANIME_DETAIL, variables);
-        
+
         res.status(200).json({
             success: true,
             data: data.data // AniList mengembalikan { data: { Media: { ... } } }
