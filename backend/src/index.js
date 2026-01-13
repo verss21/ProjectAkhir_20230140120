@@ -11,6 +11,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/anime', require('./routes/animeRoutes'));
 app.use('/api/favorites', require('./routes/favoriteRoutes'));
 app.use('/api/ratings', require('./routes/ratingRoutes'));
 app.use('/api/watchlist', require('./routes/watchlistRoutes'));

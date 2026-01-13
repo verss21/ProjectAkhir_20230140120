@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getAllAnimes, addAnime, deleteAnime } = require('../controllers/adminController');
+const { getPopularAnime, getAnimeDetail } = require('../controllers/animeController');
 
-router.get('/list', getAllAnimes);
-router.post('/add', addAnime);
-router.delete('/delete/:id', deleteAnime);
+router.get('/list', getPopularAnime);
+router.get('/detail/:id', getAnimeDetail);
 
 module.exports = router;
