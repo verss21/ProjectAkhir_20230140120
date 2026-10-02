@@ -18,7 +18,8 @@ app.use('/api/watchlist', require('./routes/watchlistRoutes'));
 app.use('/api/history', require('./routes/historyRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 
-const PORT = 5001;
+require('dotenv').config();
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

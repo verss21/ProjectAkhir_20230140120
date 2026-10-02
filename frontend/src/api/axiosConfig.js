@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5001',
+  // Gunakan substring untuk membuang "/api" jika ada pada .env, karena endpoint di frontend sudah menulis "/api/..."
+  baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '') : 'http://localhost:5000',
 });
 
 // Interceptor untuk pasang token otomatis

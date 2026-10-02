@@ -10,6 +10,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
   const [sourceTitle, setSourceTitle] = useState('Trending Global');
@@ -79,9 +80,13 @@ const Home = () => {
         setPage(prev => prev + 1);
       }
       setHasMore(res.data.pagination.has_next_page);
+      setError(null);
     } catch (err) {
       if (err.response?.status === 429) {
         alert("Terlalu banyak permintaan ke Jikan API. Mohon tunggu sebentar.");
+        setError("Jikan API sibuk (Rate Limit). Coba lagi nanti.");
+      } else {
+        setError("Gagal mengambil data dari Jikan API (Server mungkin Down).");
       }
       console.error("Gagal mengambil data:", err);
     } finally {
@@ -104,8 +109,10 @@ const Home = () => {
       const jikanRes = await fetchWithRetry(`https://api.jikan.moe/v4/anime?q=${query}&limit=24`);
       setAnimes(jikanRes.data.data);
       setHasMore(false);
+      setError(null);
     } catch (err) {
       console.error("Pencarian gagal:", err);
+      setError("Pencarian gagal, API bermasalah.");
     } finally {
       setLoading(false);
     }
@@ -134,12 +141,36 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loading, hasMore, query, page]);
 
-  if (checkingKey) return <div className="flex items-center justify-center min-h-screen text-blue-400 font-black animate-pulse">MEMERIKSA LAYANAN...</div>;
+  if (checkingKey) return <div className="flex items-center justify-center min-h-screen text-blue-400 font-black animate-pulse uppercase tracking-[0.5em]">Syncing Core...</div>;
 
   const heroAnime = animes[0];
 
   return (
-    <div className="py-8 px-4 max-w-[1600px] mx-auto min-h-screen">
+    <div className="py-8 px-4 max-w-[1600px] mx-auto min-h-screen relative">
+      {/* Overlay for Unlocked Users */}
+      {!hasApiKey && !checkingKey && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl">
+          <div className="glass-morphism p-12 rounded-[3rem] text-center border-white/20 shadow-[0_0_100px_rgba(0,242,255,0.15)] max-w-md mx-4 transform transition-all duration-700 hover:scale-105">
+            <div className="w-20 h-20 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl animate-bounce">
+              <span className="text-4xl">🔐</span>
+            </div>
+            <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-4">Discovery Locked</h2>
+            <p className="text-gray-400 text-sm font-medium mb-10 leading-relaxed">System protocols require an active API key to access the anime realm. Access your identity signature to proceed.</p>
+            <button
+              onClick={handleGenerateKey}
+              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-black font-black py-4 rounded-2xl shadow-xl shadow-cyan-500/20 transition-all uppercase text-xs tracking-[0.2em] active:scale-95"
+            >
+              Generate Access Key
+            </button>
+            {generatedKey && (
+              <div className="mt-8 p-4 bg-white/5 rounded-2xl border border-white/10 animate-fade-in">
+                <p className="text-[10px] text-cyan-400 font-black uppercase mb-2 tracking-widest">Key Synchronized</p>
+                <code className="text-xs font-mono text-white break-all">{generatedKey}</code>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {/* Header & Search Section */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6 bg-white/5 p-6 rounded-[2.5rem] border border-white/5 backdrop-blur-md shadow-2xl">
         <div className="flex items-center gap-4">
@@ -245,9 +276,16 @@ const Home = () => {
         </div>
       )}
 
-      {!hasMore && !loading && !query && (
+      {!hasMore && !loading && !query && !error && (
         <div className="text-center py-20">
           <p className="text-gray-600 uppercase font-black text-xs tracking-[0.3em]">End of the anime realm</p>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="text-center py-20 flex flex-col items-center gap-4">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center text-red-500 text-2xl animate-pulse">⚠️</div>
+          <p className="text-red-400 font-black uppercase text-sm tracking-widest max-w-md">{error}</p>
         </div>
       )}
     </div>

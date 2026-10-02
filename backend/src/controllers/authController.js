@@ -2,6 +2,7 @@ const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto'); // Untuk generate random string
+const { fetchFromJikan } = require('../services/jikanService');
 
 // 1. LOGIKA REGISTER
 const register = async (req, res) => {
@@ -98,8 +99,9 @@ const getExternalProfile = async (req, res) => {
     try {
         const userId = req.user.id;
         const [userData] = await db.query('SELECT id, username, role FROM users WHERE id = ?', [userId]);
-        const [favorites] = await db.query('SELECT title, type, image_url FROM favorites WHERE user_id = ?', [userId]);
-        const [watchlist] = await db.query('SELECT title, type, image_url FROM watchlist WHERE user_id = ?', [userId]);
+
+        // Fetch top anime (data pas awal login)
+        const animeData = await fetchFromJikan('/top/anime', { limit: 5 });
 
         res.json({
             success: true,
@@ -107,12 +109,12 @@ const getExternalProfile = async (req, res) => {
             timestamp: new Date().toISOString(),
             data: {
                 user: userData[0],
-                statistics: {
-                    total_favorites: favorites.length,
-                    total_watchlist: watchlist.length
-                },
-                favorites: favorites.slice(0, 5), // Limit sample
-                watchlist: watchlist.slice(0, 5)
+                anime_list: animeData.data.map(anime => ({
+                    id: anime.mal_id,
+                    title: anime.title,
+                    image_url: anime.images.jpg.large_image_url,
+                    score: anime.score
+                }))
             }
         });
     } catch (err) {
