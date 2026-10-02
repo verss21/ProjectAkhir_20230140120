@@ -78,6 +78,4 @@ Pastikan komputer Anda sudah terinstal **Node.js** dan local server database **M
 - **Halaman Login & Discovery Locked:**  
   ![Login Page](./frontend/public/screenshot-locked.png)
 
----
 
-*Dibuat untuk keperluan Proyek Akhir PWS.*
